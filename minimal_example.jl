@@ -7,6 +7,8 @@ include("sp_model.jl")
 using DataFrames
 using CSV
 
+Random.seed!(1)
+
 ##
 # Define the data we are working on
 timesteps = 1:168
@@ -60,9 +62,13 @@ ovs = [objective_value(sp, i) for i in 1:length(scens)]
 eds = [evaluate_decision(sp, od, scen) for scen in scens]
 
 ##
+
+@show mean(eds) .- ov # -218809.05039871123
+
+##
 # If f() = evaluate_decision(sp, od, s)-objective_value(sp,2,s), then eds[i]-ovs[i] should be scenario independent, that is constant. We check if that's true:
-@show maximum(eds .- ovs)
-@show minimum(eds .- ovs)
+@show maximum(eds .- ovs) # -604955.7360808562 
+@show minimum(eds .- ovs) #  -1.0477844558753553e6
 # Unfortunately it's not the same.
 
 ##
@@ -73,4 +79,4 @@ cache_solution!(sp)
 
 ovs2 = [objective_value(sp, i) for i in 1:length(scens)]
 
-unique(ovs2 .- ov) # always 0.
+unique(ovs2 .- ov) # [0.0]
