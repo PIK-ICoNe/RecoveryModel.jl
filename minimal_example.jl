@@ -61,10 +61,14 @@ ov = objective_value(sp)
 ovs = [objective_value(sp, i) for i in 1:length(scens)]
 eds = [evaluate_decision(sp, od, scen) for scen in scens]
 
+ed0 = evaluate_decision(sp, od, no_flex_pseudo_sampler()[1])
+
+@show ov - evaluate_decision(sp, od) # 6.472691893577576e-8
+
 ##
 
 @show mean(eds) .- ov # -218809.05039871123
-
+@show mean(ovs) .- ov
 ##
 # If f() = evaluate_decision(sp, od, s)-objective_value(sp,2,s), then eds[i]-ovs[i] should be scenario independent, that is constant. We check if that's true:
 @show maximum(eds .- ovs) # -604955.7360808562 
@@ -73,10 +77,10 @@ eds = [evaluate_decision(sp, od, scen) for scen in scens]
 
 ##
 # We also found a bug in cache_solution. After it objective_value(sp,2,i) == objective_value(sp) for any i.
-cache_solution!(sp)
+# cache_solution!(sp)
 
 ##
 
-ovs2 = [objective_value(sp, i) for i in 1:length(scens)]
+# ovs2 = [objective_value(sp, i) for i in 1:length(scens)]
 
 unique(ovs2 .- ov) # [0.0]
