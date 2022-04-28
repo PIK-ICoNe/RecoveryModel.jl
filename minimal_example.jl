@@ -11,7 +11,7 @@ Random.seed!(1)
 
 ##
 # Define the data we are working on
-timesteps = 1:168
+timesteps = 1:160
 
 pv = CSV.read("timeseries/basic_example_normalized.csv", DataFrame)[timesteps, 3]
 wind = CSV.read("timeseries/basic_example_normalized.csv", DataFrame)[timesteps, 4]
@@ -58,23 +58,28 @@ od = optimal_decision(sp)
 
 ov = objective_value(sp)
 # We save objective value and result of evaluate_decision for each scenario
-ovs = [objective_value(sp, i) for i in 1:length(scens)]
+ovs = [objective_value(sp, i) for i in 1:length(scens)] # Orde of magnitude wise this should probably be h(x, xi)
 eds = [evaluate_decision(sp, od, scen) for scen in scens]
 
-ed0 = evaluate_decision(sp, od, no_flex_pseudo_sampler()[1])
-
-@show ov - evaluate_decision(sp, od) # 6.472691893577576e-8
+ed0 = evaluate_decision(sp, od, no_flex_pseudo_sampler()[1]) 
 
 ##
+@show ov - evaluate_decision(sp, od) ; # 0.0
 
-@show mean(eds) .- ov # -218809.05039871123
-@show mean(ovs) .- ov
+nothing
+##
+@show ed0 # -181827.20023213763
+@show mean(eds) .- ov # -73666.1499255957
+@show mean(ovs) .- ov # 140615.50919693563
+
+nothing
 ##
 # If f() = evaluate_decision(sp, od, s)-objective_value(sp,2,s), then eds[i]-ovs[i] should be scenario independent, that is constant. We check if that's true:
-@show maximum(eds .- ovs) # -604955.7360808562 
-@show minimum(eds .- ovs) #  -1.0477844558753553e6
+@show maximum(eds .- ovs) # -181827.20023213763
+@show minimum(eds .- ovs) #  -227655.07249998135
 # Unfortunately it's not the same.
 
+nothing
 ##
 # We also found a bug in cache_solution. After it objective_value(sp,2,i) == objective_value(sp) for any i.
 # cache_solution!(sp)
@@ -83,4 +88,4 @@ ed0 = evaluate_decision(sp, od, no_flex_pseudo_sampler()[1])
 
 # ovs2 = [objective_value(sp, i) for i in 1:length(scens)]
 
-unique(ovs2 .- ov) # [0.0]
+# unique(ovs2 .- ov) # [0.0]
