@@ -68,18 +68,27 @@ ed0 = evaluate_decision(sp, od, no_flex_pseudo_sampler()[1])
 
 nothing
 ##
-@show ed0 # -181827.20023213763
-@show mean(eds) .- ov # -73666.1499255957
-@show mean(ovs) .- ov # 140615.50919693563
+@show ed0 # -887093.6005159041
+@show mean(eds) .- ov # -198916.62370230374
+@show mean(ovs) .- ov # 640021.5608751279
 
 nothing
 ##
 # If f() = evaluate_decision(sp, od, s)-objective_value(sp,2,s), then eds[i]-ovs[i] should be scenario independent, that is constant. We check if that's true:
-@show maximum(eds .- ovs) # -181827.20023213763
-@show minimum(eds .- ovs) #  -227655.07249998135
+@show maximum(eds .- ovs) # -632720.6219669444
+@show minimum(eds .- ovs) # -1.0826012595911173e6
 # Unfortunately it's not the same.
-
 nothing
+
+#=
+ed0 = -887093.6005159041
+mean(eds) .- ov = -198916.62370230374
+mean(ovs) .- ov = 640021.5608751279
+
+maximum(eds .- ovs) = -632720.6219669444
+minimum(eds .- ovs) = -1.0826012595911173e6
+=#
+
 ##
 # We also found a bug in cache_solution. After it objective_value(sp,2,i) == objective_value(sp) for any i.
 # cache_solution!(sp)
